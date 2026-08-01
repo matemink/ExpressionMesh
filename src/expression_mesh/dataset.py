@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 
 from .face_mesh import FaceLandmarkExtractor
-from .labels import EMOTIONS
+from .labels import EXPRESSIONS
 
 IMAGE_EXTENSIONS = {".jpeg", ".jpg", ".png", ".webp"}
 
@@ -30,8 +30,8 @@ def prepare_dataset(source: Path, output: Path) -> DatasetReport:
     unreadable = 0
 
     with FaceLandmarkExtractor(static_image_mode=True) as extractor:
-        for emotion in EMOTIONS:
-            class_directory = source / emotion.directory_name
+        for expression in EXPRESSIONS:
+            class_directory = source / expression.directory_name
             if not class_directory.is_dir():
                 raise FileNotFoundError(f"Missing class directory: {class_directory}")
 
@@ -51,11 +51,13 @@ def prepare_dataset(source: Path, output: Path) -> DatasetReport:
                 if features is None:
                     no_face += 1
                     continue
-                records.append(np.append(features, emotion.value))
+                records.append(np.append(features, expression.value))
                 accepted_for_class += 1
 
             if accepted_for_class == 0:
-                raise RuntimeError(f"No usable {emotion.directory_name} faces in {class_directory}")
+                raise RuntimeError(
+                    f"No usable {expression.directory_name} faces in {class_directory}"
+                )
 
     if not records:
         raise RuntimeError(f"No usable faces found under {source}")

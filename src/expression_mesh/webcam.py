@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from .face_mesh import FaceLandmarkExtractor
-from .model import EmotionClassifier
+from .model import ExpressionClassifier
 
 
 def run_webcam(model_path: Path, camera_index: int) -> None:
@@ -13,7 +13,7 @@ def run_webcam(model_path: Path, camera_index: int) -> None:
     except ImportError as error:
         raise RuntimeError('OpenCV is missing. Install with: pip install -e ".[vision]"') from error
 
-    classifier = EmotionClassifier.load(model_path)
+    classifier = ExpressionClassifier.load(model_path)
     capture = cv2.VideoCapture(camera_index)
     if not capture.isOpened():
         capture.release()
@@ -33,7 +33,7 @@ def run_webcam(model_path: Path, camera_index: int) -> None:
                     confidence = (
                         f" {prediction.confidence:.0%}" if prediction.confidence is not None else ""
                     )
-                    label = f"{prediction.emotion.name}{confidence}"
+                    label = f"{prediction.expression.name}{confidence}"
 
                 cv2.putText(
                     frame,
@@ -44,7 +44,7 @@ def run_webcam(model_path: Path, camera_index: int) -> None:
                     (40, 220, 40),
                     3,
                 )
-                cv2.imshow("Emotion recognition | q to quit", frame)
+                cv2.imshow("ExpressionMesh | q to quit", frame)
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
     finally:
@@ -53,7 +53,7 @@ def run_webcam(model_path: Path, camera_index: int) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run real-time emotion recognition")
+    parser = argparse.ArgumentParser(description="Run real-time facial-expression classification")
     parser.add_argument("--model", type=Path, default=Path("model"))
     parser.add_argument("--camera", type=int, default=0)
     return parser

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from emotion_recognition.features import FEATURE_COUNT, landmarks_to_features
+from expression_mesh.features import FEATURE_COUNT, landmarks_to_features
 
 
 def test_landmarks_to_features_preserves_legacy_normalization() -> None:

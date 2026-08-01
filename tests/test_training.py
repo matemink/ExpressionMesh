@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from emotion_recognition.features import FEATURE_COUNT
-from emotion_recognition.training import load_dataset, train_classifier
+from expression_mesh.features import FEATURE_COUNT
+from expression_mesh.training import load_dataset, train_classifier
 
 
 def test_training_is_seeded_and_returns_complete_confusion_matrix() -> None:

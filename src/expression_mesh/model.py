@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .features import FEATURE_COUNT, validate_feature_vector
-from .labels import EXPECTED_CLASS_IDS, Emotion, emotion_from_id
+from .labels import EXPECTED_CLASS_IDS, Expression, expression_from_id
 
 
 class ModelContractError(ValueError):
@@ -15,17 +15,17 @@ class ModelContractError(ValueError):
 
 @dataclass(frozen=True)
 class Prediction:
-    emotion: Emotion
+    expression: Expression
     confidence: float | None
 
 
-class EmotionClassifier:
+class ExpressionClassifier:
     def __init__(self, estimator: Any) -> None:
         self._estimator = estimator
         self._validate_contract()
 
     @classmethod
-    def load(cls, path: str | Path) -> EmotionClassifier:
+    def load(cls, path: str | Path) -> ExpressionClassifier:
         """Load a trusted pickle artifact and validate it before inference."""
         model_path = Path(path)
         if not model_path.is_file():
@@ -43,15 +43,15 @@ class EmotionClassifier:
         vector = validate_feature_vector(features)
         sample = vector.reshape(1, -1)
         class_id = self._estimator.predict(sample)[0]
-        emotion = emotion_from_id(class_id)
+        expression = expression_from_id(class_id)
 
         confidence = None
         if hasattr(self._estimator, "predict_proba"):
             probabilities = self._estimator.predict_proba(sample)[0]
-            class_index = list(self._estimator.classes_).index(emotion.value)
+            class_index = list(self._estimator.classes_).index(expression.value)
             confidence = float(probabilities[class_index])
 
-        return Prediction(emotion=emotion, confidence=confidence)
+        return Prediction(expression=expression, confidence=confidence)
 
     def _validate_contract(self) -> None:
         if not callable(getattr(self._estimator, "predict", None)):
@@ -59,7 +59,7 @@ class EmotionClassifier:
 
         try:
             classes = tuple(
-                emotion_from_id(class_id).value
+                expression_from_id(class_id).value
                 for class_id in getattr(self._estimator, "classes_", ())
             )
         except (TypeError, ValueError) as error:

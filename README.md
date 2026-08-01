@@ -1,11 +1,12 @@
-# Face Emotion Recognition
+# ExpressionMesh
 
-[![CI](https://github.com/matemink/emotion-recognition/actions/workflows/ci.yml/badge.svg)](https://github.com/matemink/emotion-recognition/actions/workflows/ci.yml)
+[![CI](https://github.com/matemink/ExpressionMesh/actions/workflows/ci.yml/badge.svg)](https://github.com/matemink/ExpressionMesh/actions/workflows/ci.yml)
 [![Python 3.10-3.12](https://img.shields.io/badge/python-3.10--3.12-3776AB.svg)](https://www.python.org/)
 
-A small, reproducible computer-vision pipeline that turns MediaPipe facial landmarks into
-three expression classes using a scikit-learn Random Forest. The repository includes dataset
-preparation, deterministic training, model validation, and a real-time webcam demo.
+ExpressionMesh is a small, reproducible computer-vision pipeline that classifies MediaPipe
+facial landmarks into three visible expression classes using a scikit-learn Random Forest.
+The repository includes dataset preparation, deterministic training, model validation, and a
+real-time webcam demo.
 
 This is an engineering experiment, not a claim that facial expressions reveal a person's
 internal emotional state. See the [model card](MODEL_CARD.md) for provenance and limitations.
@@ -42,13 +43,13 @@ python -m pip install -e ".[vision]"
 Validate the committed model contract:
 
 ```bash
-emotion-model-info model
+expression-mesh-model-info model
 ```
 
 Start webcam inference and press `q` to exit:
 
 ```bash
-emotion-webcam --model model --camera 0
+expression-mesh-webcam --model model --camera 0
 ```
 
 Only load pickle artifacts you trust. Loading a malicious pickle can execute arbitrary code.
@@ -58,8 +59,8 @@ Only load pickle artifacts you trust. Loading a malicious pickle can execute arb
 The input directory must contain `happy`, `sad`, and `surprised` subdirectories.
 
 ```bash
-emotion-prepare-data path/to/faces --output data.txt
-emotion-train data.txt --model artifacts/model.pkl --metrics artifacts/metrics.json
+expression-mesh-prepare-data path/to/faces --output data.txt
+expression-mesh-train data.txt --model artifacts/model.pkl --metrics artifacts/metrics.json
 ```
 
 Training is seeded and emits both the model and machine-readable evaluation metadata. To
@@ -89,12 +90,12 @@ an explicit manual test.
 
 | Path | Responsibility |
 | --- | --- |
-| `src/emotion_recognition/features.py` | Landmark normalization and feature validation |
-| `src/emotion_recognition/face_mesh.py` | Reusable MediaPipe adapter |
-| `src/emotion_recognition/model.py` | Serialized model contract and predictions |
-| `src/emotion_recognition/dataset.py` | Image-to-feature dataset preparation |
-| `src/emotion_recognition/training.py` | Deterministic train/evaluate/save workflow |
-| `src/emotion_recognition/webcam.py` | Real-time OpenCV application |
+| `src/expression_mesh/features.py` | Landmark normalization and feature validation |
+| `src/expression_mesh/face_mesh.py` | Reusable MediaPipe adapter |
+| `src/expression_mesh/model.py` | Serialized model contract and predictions |
+| `src/expression_mesh/dataset.py` | Image-to-feature dataset preparation |
+| `src/expression_mesh/training.py` | Deterministic train/evaluate/save workflow |
+| `src/expression_mesh/webcam.py` | Real-time OpenCV application |
 | `tests/` | Fast hardware-independent tests |
 | `tools/` | Optional synthetic generation and CUDA diagnostics |
 
