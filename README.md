@@ -13,20 +13,12 @@ internal emotional state. See the [model card](MODEL_CARD.md) for provenance and
 
 ## Pipeline
 
-```text
-synthetic portraits
-       |
-       v
-MediaPipe Face Mesh (468 x/y/z landmarks)
-       |
-       v
-minimum-per-axis normalization (1,404 features)
-       |
-       v
-Random Forest classifier
-       |
-       v
-HAPPY | SAD | SURPRISED + confidence
+```mermaid
+flowchart LR
+    Portraits["Synthetic portraits"] --> Mesh["MediaPipe Face Mesh<br/>468 x/y/z landmarks"]
+    Mesh --> Normalize["Minimum-per-axis normalization<br/>1,404 features"]
+    Normalize --> Classifier["Random Forest classifier"]
+    Classifier --> Result["HAPPY | SAD | SURPRISED<br/>with confidence"]
 ```
 
 ## Quick start
