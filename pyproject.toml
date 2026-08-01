@@ -3,14 +3,14 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "face-emotion-recognition"
+name = "expression-mesh"
 version = "0.2.0"
-description = "A reproducible facial-landmark emotion recognition pipeline and webcam demo"
+description = "Reproducible facial-expression classification from MediaPipe Face Mesh landmarks"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { file = "LICENSE" }
 authors = [{ name = "Igor Kostenko" }]
-keywords = ["computer-vision", "mediapipe", "emotion-recognition", "machine-learning"]
+keywords = ["computer-vision", "mediapipe", "facial-expression-recognition", "machine-learning"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
@@ -39,10 +39,10 @@ dev = [
 ]
 
 [project.scripts]
-emotion-model-info = "emotion_recognition.model_info:main"
-emotion-prepare-data = "emotion_recognition.dataset:main"
-emotion-train = "emotion_recognition.training:main"
-emotion-webcam = "emotion_recognition.webcam:main"
+expression-mesh-model-info = "expression_mesh.model_info:main"
+expression-mesh-prepare-data = "expression_mesh.dataset:main"
+expression-mesh-train = "expression_mesh.training:main"
+expression-mesh-webcam = "expression_mesh.webcam:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

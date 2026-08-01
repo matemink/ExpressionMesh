@@ -44,5 +44,5 @@ file so future artifacts can be reproduced and compared.
 ## Security and privacy
 
 The webcam demo processes frames locally and does not save or transmit them. Python pickle can
-execute code while loading, so use `emotion-model-info` and `emotion-webcam` only with a model
-artifact you trust.
+execute code while loading, so use `expression-mesh-model-info` and
+`expression-mesh-webcam` only with a model artifact you trust.

@@ -94,7 +94,7 @@ def save_training_run(
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Train the emotion Random Forest classifier")
+    parser = argparse.ArgumentParser(description="Train the facial-expression classifier")
     parser.add_argument("dataset", type=Path)
     parser.add_argument("--model", type=Path, default=Path("model"))
     parser.add_argument("--metrics", type=Path, default=Path("artifacts/metrics.json"))

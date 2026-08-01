@@ -5,11 +5,11 @@ import json
 from importlib.metadata import version
 from pathlib import Path
 
-from .model import EmotionClassifier
+from .model import ExpressionClassifier
 
 
 def describe_model(model_path: Path) -> dict[str, object]:
-    classifier = EmotionClassifier.load(model_path)
+    classifier = ExpressionClassifier.load(model_path)
     estimator = classifier.estimator
     return {
         "artifact": str(model_path),
