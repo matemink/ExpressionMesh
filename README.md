@@ -3,10 +3,13 @@
 [![CI](https://github.com/matemink/ExpressionMesh/actions/workflows/ci.yml/badge.svg)](https://github.com/matemink/ExpressionMesh/actions/workflows/ci.yml)
 [![Python 3.10-3.12](https://img.shields.io/badge/python-3.10--3.12-3776AB.svg)](https://www.python.org/)
 
-ExpressionMesh is a small, reproducible computer-vision pipeline that classifies MediaPipe
-facial landmarks into three visible expression classes using a scikit-learn Random Forest.
-The repository includes dataset preparation, deterministic training, model validation, and a
-real-time webcam demo.
+ExpressionMesh is an end-to-end synthetic-data-to-webcam computer-vision project. It covers
+the complete path:
+
+- generate a labeled portrait dataset with Stable Diffusion v1.5 and Hugging Face Diffusers;
+- extract 468 facial landmarks per image with MediaPipe Face Mesh;
+- train and evaluate a deterministic scikit-learn Random Forest classifier;
+- run local real-time inference from a webcam with OpenCV and MediaPipe.
 
 This is an engineering experiment, not a claim that facial expressions reveal a person's
 internal emotional state. See the [model card](MODEL_CARD.md) for provenance and limitations.
@@ -15,10 +18,23 @@ internal emotional state. See the [model card](MODEL_CARD.md) for provenance and
 
 ```mermaid
 flowchart LR
-    Portraits["Synthetic portraits"] --> Mesh["MediaPipe Face Mesh<br/>468 x/y/z landmarks"]
-    Mesh --> Normalize["Minimum-per-axis normalization<br/>1,404 features"]
-    Normalize --> Classifier["Random Forest classifier"]
-    Classifier --> Result["HAPPY | SAD | SURPRISED<br/>with confidence"]
+    subgraph Training["Dataset generation and model training"]
+        Prompts["Expression prompts"] --> SD["Stable Diffusion v1.5"]
+        SD --> Dataset["Labeled synthetic portraits"]
+        Dataset --> TrainMesh["MediaPipe Face Mesh"]
+        TrainMesh --> TrainFeatures["1,404 normalized landmarks"]
+        TrainFeatures --> Train["Random Forest training"]
+    end
+
+    subgraph Runtime["Real-time webcam inference"]
+        Webcam["Webcam"] --> OpenCV["OpenCV frame capture"]
+        OpenCV --> LiveMesh["MediaPipe Face Mesh"]
+        LiveMesh --> LiveFeatures["1,404 normalized landmarks"]
+    end
+
+    Train --> Model["Trained model"]
+    LiveFeatures --> Model
+    Model --> Result["HAPPY | SAD | SURPRISED<br/>with confidence"]
 ```
 
 ## Quick start
