@@ -3,15 +3,13 @@
 [![CI](https://github.com/matemink/ExpressionMesh/actions/workflows/ci.yml/badge.svg)](https://github.com/matemink/ExpressionMesh/actions/workflows/ci.yml)
 [![Python 3.10-3.12](https://img.shields.io/badge/python-3.10--3.12-3776AB.svg)](https://www.python.org/)
 
-ExpressionMesh is an end-to-end computer-vision project that connects
-synthetic dataset generation, model training, and real-time webcam inference.
-It generates labeled portraits with Stable Diffusion, extracts normalized
-MediaPipe Face Mesh landmarks, trains a scikit-learn classifier, and runs the
-result locally through OpenCV.
+ExpressionMesh is an end-to-end computer-vision project covering synthetic
+dataset generation, model training, and real-time webcam inference. Stable
+Diffusion creates labeled portraits; MediaPipe, scikit-learn, and OpenCV turn
+them into a locally executable expression classifier.
 
 This is an engineering experiment, not a claim that facial expressions reveal
-a person's internal emotional state. Provenance and limitations are documented
-in the [model card](MODEL_CARD.md).
+a person's internal emotional state.
 
 ## Pipeline
 
@@ -34,48 +32,26 @@ flowchart LR
     Model --> Result["Expression + confidence"]
 ```
 
-## Run webcam inference
+## Highlights
 
-Create a Python 3.10-3.12 environment and install the vision dependencies:
+- Synthetic portrait generation with seeded Stable Diffusion prompts.
+- Shared MediaPipe Face Mesh feature extraction for training and inference.
+- Deterministic Random Forest training with machine-readable metrics.
+- Local real-time webcam classification through OpenCV.
+- Model-contract validation plus linting and unit tests in GitHub Actions.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-python -m pip install -e ".[vision]"
-expression-mesh-model-info model
-expression-mesh-webcam --model model --camera 0
-```
+## Built and tested with
 
-Press `q` to exit. Only load pickle artifacts you trust.
+- **Generation:** Stable Diffusion, Hugging Face Diffusers, and PyTorch.
+- **Vision and ML:** MediaPipe Face Mesh, OpenCV, and scikit-learn.
+- **Quality:** Ruff and pytest on Python 3.10 and 3.12 in GitHub Actions.
 
-## Reproduce training
+The committed legacy model was trained on synthetic images. Its original
+dataset and evaluation metrics are unavailable, so no accuracy is claimed;
+webcam behavior and real-world generalization remain manual validation areas.
 
-Provide `happy`, `sad`, and `surprised` image directories, then run:
+## Explore
 
-```bash
-expression-mesh-prepare-data path/to/faces --output data.txt
-expression-mesh-train data.txt --model artifacts/model.pkl --metrics artifacts/metrics.json
-```
-
-Synthetic portraits can be regenerated after installing `.[generation]`:
-
-```bash
-python tools/generate_synthetic_faces.py path/to/faces --per-class 250 --seed 42
-```
-
-The dataset is intentionally not tracked because of its size and upstream
-model licensing. Training is seeded and emits machine-readable metrics.
-
-## Quality and limitations
-
-```bash
-python -m pip install -e ".[dev]"
-ruff check .
-pytest
-```
-
-GitHub Actions runs linting and unit tests on Python 3.10 and 3.12. The
-committed legacy model was trained on synthetic images; its original dataset
-and evaluation metrics are unavailable, so no accuracy is claimed. It requires
-scikit-learn `1.4.1.post1` for reliable pickle compatibility. Webcam behavior
-and real-world generalization remain manual validation areas.
+- [Model provenance and limitations](MODEL_CARD.md)
+- [Application code](src/expression_mesh)
+- [Tests](tests)
