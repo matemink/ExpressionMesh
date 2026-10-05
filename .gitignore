@@ -165,5 +165,6 @@ content/
 faces/
 artifacts/
 
-
-
+# Local architecture generation receipts
+.archify/
+docs/diagrams/*.delivery.json

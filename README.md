@@ -13,24 +13,14 @@ a person's internal emotional state.
 
 ## Pipeline
 
-```mermaid
-flowchart LR
-    subgraph Training["Synthetic data and training"]
-        Prompts["Expression prompts"] --> SD["Stable Diffusion"]
-        SD --> Dataset["Labeled portraits"]
-        Dataset --> TrainMesh["MediaPipe Face Mesh"]
-        TrainMesh --> Train["Random Forest"]
-    end
+<a href="https://matemink.github.io/ExpressionMesh/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/overview-dark.svg">
+    <img alt="Synthetic portraits, Face Mesh features and Random Forest training, followed by local webcam inference" src="docs/diagrams/overview-light.svg" width="960">
+  </picture>
+</a>
 
-    subgraph Runtime["Real-time inference"]
-        Webcam["Webcam"] --> OpenCV["OpenCV"]
-        OpenCV --> LiveMesh["MediaPipe Face Mesh"]
-    end
-
-    Train --> Model["Trained model"]
-    LiveMesh --> Model
-    Model --> Result["Expression + confidence"]
-```
+[Explore the interactive map](https://matemink.github.io/ExpressionMesh/) · [Diagram source and refresh guide](docs/diagrams/README.md)
 
 ## Highlights
 
