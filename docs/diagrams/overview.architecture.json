@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ExpressionMesh · From portraits to live predictions",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "docs/diagrams/overview.html",
+    "repository": {
+      "url": "https://github.com/matemink/ExpressionMesh.git",
+      "revision": "ab8fe55d79354ea1315295e53fe3b8316ac560b9",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "generation",
+      "type": "backend",
+      "label": "Synthetic generation",
+      "sublabel": "Stable Diffusion · seeded prompts",
+      "pos": [
+        40,
+        70
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "tools/generate_synthetic_faces.py",
+          "line": 15,
+          "end_line": 56
+        }
+      ]
+    },
+    {
+      "id": "portraits",
+      "type": "external",
+      "label": "Labeled portrait files",
+      "sublabel": "happy / sad / surprised",
+      "pos": [
+        425,
+        70
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "tools/generate_synthetic_faces.py",
+          "line": 40,
+          "end_line": 56
+        },
+        {
+          "path": "src/expression_mesh/dataset.py",
+          "line": 32,
+          "end_line": 54
+        }
+      ]
+    },
+    {
+      "id": "preparation",
+      "type": "backend",
+      "label": "Feature preparation",
+      "sublabel": "MediaPipe Face Mesh",
+      "pos": [
+        810,
+        70
+      ],
+      "size": [
+        240,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/dataset.py",
+          "line": 22,
+          "end_line": 67
+        },
+        {
+          "path": "src/expression_mesh/face_mesh.py",
+          "line": 29,
+          "end_line": 51
+        },
+        {
+          "path": "src/expression_mesh/features.py",
+          "line": 5,
+          "end_line": 26
+        }
+      ]
+    },
+    {
+      "id": "dataset",
+      "type": "external",
+      "label": "Feature dataset",
+      "sublabel": "data.txt · 1404 features + label",
+      "pos": [
+        820,
+        300
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/dataset.py",
+          "line": 65,
+          "end_line": 73
+        },
+        {
+          "path": "src/expression_mesh/training.py",
+          "line": 28,
+          "end_line": 44
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "type": "backend",
+      "label": "Classifier training",
+      "sublabel": "Random Forest · held-out split",
+      "pos": [
+        425,
+        300
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/training.py",
+          "line": 47,
+          "end_line": 93
+        }
+      ]
+    },
+    {
+      "id": "artifacts",
+      "type": "external",
+      "label": "Training artifacts",
+      "sublabel": "Pickle model + metrics JSON",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/training.py",
+          "line": 81,
+          "end_line": 100
+        },
+        {
+          "path": "src/expression_mesh/model.py",
+          "line": 27,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "webcam",
+      "type": "external",
+      "label": "Webcam",
+      "sublabel": "OpenCV frame capture",
+      "pos": [
+        40,
+        570
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/webcam.py",
+          "line": 12,
+          "end_line": 31
+        }
+      ]
+    },
+    {
+      "id": "inference",
+      "type": "backend",
+      "label": "Live inference",
+      "sublabel": "Face Mesh + loaded classifier",
+      "pos": [
+        425,
+        570
+      ],
+      "size": [
+        220,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/webcam.py",
+          "line": 12,
+          "end_line": 39
+        },
+        {
+          "path": "src/expression_mesh/model.py",
+          "line": 41,
+          "end_line": 56
+        },
+        {
+          "path": "src/expression_mesh/face_mesh.py",
+          "line": 35,
+          "end_line": 51
+        }
+      ]
+    },
+    {
+      "id": "display",
+      "type": "frontend",
+      "label": "OpenCV window",
+      "sublabel": "Expression + optional confidence",
+      "pos": [
+        810,
+        570
+      ],
+      "size": [
+        240,
+        80
+      ],
+      "sources": [
+        {
+          "path": "src/expression_mesh/webcam.py",
+          "line": 32,
+          "end_line": 49
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "save-portraits",
+      "from": "generation",
+      "to": "portraits",
+      "label": "Save PNG"
+    },
+    {
+      "id": "read-portraits",
+      "from": "portraits",
+      "to": "preparation",
+      "label": "Read images"
+    },
+    {
+      "id": "save-features",
+      "from": "preparation",
+      "to": "dataset",
+      "label": "Write features"
+    },
+    {
+      "id": "train-data",
+      "from": "dataset",
+      "to": "training",
+      "label": "Read dataset"
+    },
+    {
+      "id": "save-model",
+      "from": "training",
+      "to": "artifacts",
+      "label": "Save model / metrics"
+    },
+    {
+      "id": "load-model",
+      "from": "artifacts",
+      "to": "inference",
+      "label": "Load model",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "live-frames",
+      "from": "webcam",
+      "to": "inference",
+      "label": "Read frames",
+      "variant": "emphasis"
+    },
+    {
+      "id": "live-label",
+      "from": "inference",
+      "to": "display",
+      "label": "Draw prediction"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Offline preparation",
+      "items": [
+        "Generation, feature preparation and training are separate commands.",
+        "Training and inference share the same 1404-feature representation."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Local inference",
+      "items": [
+        "A trusted local model is loaded before webcam processing.",
+        "Frames without a detected face display NO FACE."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Model scope",
+      "items": [
+        "Labels describe visible expressions, not internal emotional state.",
+        "The legacy model has no recoverable original evaluation metrics."
+      ]
+    }
+  ]
+}
